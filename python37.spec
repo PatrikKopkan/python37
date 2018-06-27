@@ -12,13 +12,10 @@ Summary:  Version %{pybasever} of the Python interpreter
 URL: https://www.python.org/
 
 
-# First rc
-%global prerel rc1
-
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
 Version: %{pybasever}.0
-Release: 0.20.%{?prerel}%{?dist}
+Release: 1%{?dist}
 License: Python
 
 
@@ -237,7 +234,7 @@ BuildRequires: python3-pip
 # Source code and patches
 # =======================
 
-Source: https://www.python.org/ftp/python/%{version}/Python-%{version}%{prerel}.tar.xz
+Source: https://www.python.org/ftp/python/%{version}/Python-%{version}.tar.xz
 
 # A simple script to check timestamps of bytecode files
 # Run in check section with Python that is currently being built
@@ -1550,6 +1547,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Wed Jun 27 2018 Miro Hrončok <mhroncok@redhat.com> - 3.7.0-1
+- Update to 3.7.0 final
+
 * Tue Jun 12 2018 Miro Hrončok <mhroncok@redhat.com> - 3.7.0-0.20.rc1
 - Update to 3.7.0rc1
 
