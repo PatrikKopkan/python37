@@ -15,7 +15,7 @@ URL: https://www.python.org/
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
 Version: %{pybasever}.0
-Release: 5%{?dist}
+Release: 8%{?dist}
 License: Python
 
 
@@ -885,6 +885,14 @@ sed -i -e "s/'pyconfig.h'/'%{_pyconfig_h}'/" \
 # See https://github.com/fedora-python/python-rpm-porting/issues/24
 cp -p Tools/scripts/pathfix.py %{buildroot}%{_bindir}/
 
+# Install i18n tools to bindir
+# They are also in python2, so we version them
+# https://bugzilla.redhat.com/show_bug.cgi?id=1571474
+for tool in pygettext msgfmt; do
+  cp -p Tools/i18n/${tool}.py %{buildroot}%{_bindir}/${tool}%{pybasever}.py
+  ln -s ${tool}%{pybasever}.py %{buildroot}%{_bindir}/${tool}3.py
+done
+
 # Switch all shebangs to refer to the specific Python version.
 # This currently only covers files matching ^[a-zA-Z0-9_]+\.py$,
 # so handle files named using other naming scheme separately.
@@ -892,6 +900,7 @@ LD_LIBRARY_PATH=./build/optimized ./build/optimized/python \
   Tools/scripts/pathfix.py \
   -i "%{_bindir}/python%{pybasever}" -pn \
   %{buildroot} \
+  %{buildroot}%{_bindir}/*%{pybasever}.py \
   %{?with_gdb_hooks:%{buildroot}$DirHoldingGdbPy/*.py}
 
 # Remove tests for python3-tools which was removed in
@@ -956,6 +965,8 @@ mv %{buildroot}%{_bindir}/2to3-%{pybasever} %{buildroot}%{_bindir}/2to3
 rm %{buildroot}%{_bindir}/python3
 rm %{buildroot}%{_bindir}/pydoc3
 rm %{buildroot}%{_bindir}/pathfix.py
+rm %{buildroot}%{_bindir}/pygettext3.py
+rm %{buildroot}%{_bindir}/msgfmt3.py
 rm %{buildroot}%{_bindir}/idle3
 rm %{buildroot}%{_bindir}/python3-*
 rm %{buildroot}%{_bindir}/pyvenv
@@ -1321,7 +1332,12 @@ CheckPython optimized
 %{_bindir}/python3-config
 %{_libdir}/pkgconfig/python3.pc
 %{_bindir}/pathfix.py
+%{_bindir}/pygettext3.py
+%{_bindir}/msgfmt3.py
 %endif
+
+%{_bindir}/pygettext%{pybasever}.py
+%{_bindir}/msgfmt%{pybasever}.py
 
 %{_bindir}/python%{pybasever}-config
 %{_bindir}/python%{LDVERSION_optimized}-config
@@ -1521,6 +1537,10 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Fri Aug 17 2018 Miro Hrončok <mhroncok@redhat.com> - 3.7.0-8
+- Add /usr/bin/pygettext3.py and msgfmt3.py to python3-devel
+Resolves: rhbz#1571474
+
 * Fri Aug 10 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 3.7.0-5
 - Fix wrong requirement on gdbm
 
