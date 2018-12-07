@@ -597,6 +597,10 @@ version once Python %{pybasever} is stable.
 
 %prep
 %setup -q -n Python-%{version}%{?prerel}
+# Remove all exe files to ensure we are not shipping prebuilt binaries
+# note that those are only used to create Microsoft Windows installers
+# and that functionality is broken on Linux anyway
+find -name '*.exe' -print -delete
 
 # Remove bundled libraries to ensure that we're using the system copy.
 rm -r Modules/expat
@@ -1257,7 +1261,6 @@ CheckPython optimized
 %{pylibdir}/distutils/__pycache__/*%{bytecode_suffixes}
 %{pylibdir}/distutils/README
 %{pylibdir}/distutils/command
-%exclude %{pylibdir}/distutils/command/wininst-*.exe
 
 %dir %{pylibdir}/email/
 %dir %{pylibdir}/email/__pycache__/
@@ -1327,7 +1330,6 @@ CheckPython optimized
 %exclude %{pylibdir}/config-%{LDVERSION_optimized}-%{_arch}-linux%{_gnu}/Makefile
 %exclude %{_includedir}/python%{LDVERSION_optimized}/%{_pyconfig_h}
 %endif
-%{pylibdir}/distutils/command/wininst-*.exe
 %{_includedir}/python%{LDVERSION_optimized}/*.h
 %doc Misc/README.valgrind Misc/valgrind-python.supp Misc/gdbinit
 
