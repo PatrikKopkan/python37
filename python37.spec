@@ -14,7 +14,7 @@ URL: https://www.python.org/
 
 #  WARNING  When rebasing to a new Python version,
 #           remember to update the python3-docs package as well
-Version: %{pybasever}.1
+Version: %{pybasever}.2
 Release: 1%{?dist}
 License: Python
 
@@ -576,8 +576,8 @@ Requires: redhat-rpm-config
 %global __provides_exclude ^python\\(abi\\) = 3\\..$
 
 # We keep those inside on purpose
-Provides: bundled(python3-pip) = 10.0.1
-Provides: bundled(python3-setuptools) = 39.0.1
+Provides: bundled(python3-pip) = 18.1
+Provides: bundled(python3-setuptools) = 40.6.2
 
 # The description for the flat package
 %description
@@ -1330,6 +1330,7 @@ CheckPython optimized
 %exclude %{_includedir}/python%{LDVERSION_optimized}/%{_pyconfig_h}
 %endif
 %{_includedir}/python%{LDVERSION_optimized}/*.h
+%{_includedir}/python%{LDVERSION_optimized}/internal/
 %doc Misc/README.valgrind Misc/valgrind-python.supp Misc/gdbinit
 
 %if %{without flatpackage}
@@ -1550,6 +1551,9 @@ CheckPython optimized
 # ======================================================
 
 %changelog
+* Wed Jan 02 2019 Miro Hrončok <mhroncok@redhat.com> - 3.7.2-1
+- Update to 3.7.2
+
 * Mon Oct 22 2018 Miro Hrončok <mhroncok@redhat.com> - 3.7.1-1
 - Update to 3.7.1
 
